@@ -25,10 +25,25 @@ const TodoList = () => {
 
       case "REMOVE": {
         const id = state.todo.findIndex((todoId) => todoId.id === action.id);
-        const todos = state.todo;
         const todos = Object.assign([], state.todo);
         todos.splice(id, 1);
         return {
+          counter: todos.length,
+          todo: todos,
+        };
+      }
+
+      case "RESET":
+        return initialValue;
+
+      case "EDIT": {
+        const id = state.todo.findIndex((todoId) => todoId.id === action.id);
+        const todo = Object.assign({}, state.todo[id]);
+        todo.task = action.newTask;
+        const todos = Object.assign([], state.todo);
+        todos.splice(id, 1, todo);
+        return {
+          counter: state.counter,
           todo: todos,
         };
       }
@@ -38,12 +53,18 @@ const TodoList = () => {
   return (
     <div>
       {todo.counter}
-      <AddTask add={(text) => dispatch({ type: "ADD_TASK", text: text })} />
+      <AddTask
+        add={(text) => dispatch({ type: "ADD_TASK", text: text })}
+        reset={() => dispatch({ type: "RESET", payload: initialValue })}
+      />
       {todo.todo.map((list) => (
         <TodoComponent
           key={list.id}
           todo={list}
           remove={() => dispatch({ type: "REMOVE", id: list.id })}
+          edit={(text) =>
+            dispatch({ type: "EDIT", id: list.id, newTask: text })
+          }
         />
       ))}
     </div>
