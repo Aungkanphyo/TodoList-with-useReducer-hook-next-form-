@@ -26,6 +26,7 @@ const TodoList = () => {
       case "REMOVE": {
         const id = state.todo.findIndex((todoId) => todoId.id === action.id);
         const todos = state.todo;
+        const todos = Object.assign([], state.todo);
         todos.splice(id, 1);
         return {
           todo: todos,
